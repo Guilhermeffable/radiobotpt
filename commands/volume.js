@@ -1,14 +1,17 @@
-module.exports = (message,dispatcher) => {
 
-    console.log(message.content)
-    const volume = message.content.split(' ')[1]/100
-    console.log(volume)
-    if(0.0 < volume < 1.0){
-        dispatcher.setVolume(volume)
+function vol(message, dispatcher, vol){
+
+    if( vol < 0.0){
+
+        message.channel.send("Volume inválido. Insere um número de 0 a 10.")
+    
     }
     else{
-        return message.channel.send('Volume inválido.')
-    }
     
+        dispatcher.setVolume(vol)
+    
+    }
 
 }
+
+module.exports.vol = vol;

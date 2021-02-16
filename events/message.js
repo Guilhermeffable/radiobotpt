@@ -2,200 +2,324 @@ const volume = require('../commands/volume')
 const pause = require('../commands/pause')
 const clear = require('../commands/clear')
 const dis = require('../commands/dispatcher')
-const Youtube = require('simple-youtube-api');
-const youtube = new Youtube('AIzaSyCH34xrduFmR_dL9os0ev-lfO1S_9jbyp0');
+
+
 const ytdl = require('ytdl-core');
+const {YTSearcher} = require('ytsearcher');
 
-global.dispatcher = undefined;
+const searcher = new YTSearcher({
+    key: "AIzaSyBxzArRIQKk_HlwZ4fqWViN-BK0ZjJlcmc",
+    revealed: true
+});
+
+
+let vol = 5;
+
+let dispatcher;
+
 const queue = new Map();
+module.exports = async (client, message) => {
 
-module.exports = (client, message) => {
+    let content = message.content;
+    
+    const prefix = "!";
 
     const serverQueue = queue.get(message.guild.id);
+    let args = message.content.slice(prefix.length).trim().split(/ +/g);
 
-    if(message.content.startsWith('!play')){
-        
-        executePlay(message, serverQueue);
+    const command = args.shift().toLowerCase();
+
+    if(!content.startsWith(prefix) || message.author.bot) return;
+
+    if(content.startsWith(prefix + "play")){
+
+        execute(message, serverQueue, args);
 
     }
+    else if(content.startsWith(prefix + "skip")){
+        console.log(message);
+        skip(message, serverQueue);
 
-    if(message.content.startsWith('!antena3')) {
-
-        // stream Antena3
-        dispatcher = dis.createDispatcher('https://streaming-live.rtp.pt/liveradio/antena380a/playlist.m3u8?DVR', message)
-        
     }
+    else if(content.startsWith(prefix + "stop")){
 
-    if(message.content.startsWith('!orbital')) {
+        stop(message, serverQueue);
 
-        // stream Orbital FM
-        dispatcher = dis.createDispatcher('http://centova.radios.pt:8401/stream.mp3/1', message)
-        
     }
-    
-    if(message.content.startsWith('!hiper')) {
+    else if(content.startsWith(prefix + "queue")){
 
-        //stream Hiper FM
-        dispatcher = dis.createDispatcher('https://centova.radio.com.pt/proxy/500?mp=/stream', message)
-        
+        showQueue(client, message, serverQueue);
+
     }
+    else if(content.startsWith(prefix + "antena3")){
 
-    if(message.content.startsWith('!cidhip')) {
+        dispatcher = dis.createDispatcher('https://streaming-live.rtp.pt/liveradio/antena380a/playlist.m3u8?DVR', message);
 
-        // stream Cidade FM Hip-Hop
-        dispatcher = dis.createDispatcher('https://mcrwowza7.mcr.iol.pt/cidhiphop/cidhiphop.stream/playlist.m3u8', message)
-        
     }
+    else if(content.startsWith(prefix + "orbital")){
 
-    if(message.content.startsWith('!cid')) {
+        dispatcher = dis.createDispatcher('http://centova.radios.pt:8401/stream.mp3/1', message);
 
-        // stream Cidade FM
-        dispatcher = dis.createDispatcher('https://mcrwowza7.mcr.iol.pt/cidade/smil:cidade.smil/playlist.m3u8', message)
-        
     }
+    else if(content.startsWith(prefix + "hiper")){
 
-    if(message.content.startsWith('!comercial')) {
+        dispatcher = dis.createDispatcher('https://centova.radio.com.pt/proxy/500?mp=/stream', message);
 
-        // stream Comrcial
-        dispatcher = dis.createDispatcher('http://mcrwowza7.mcr.iol.pt/comercial/smil:comercial.smil/playlist.m3u8', message)
-        
     }
+    else if(content.startsWith(prefix + "cidhip")){
+        
+        dispatcher = dis.createDispatcher('https://mcrwowza7.mcr.iol.pt/cidhiphop/cidhiphop.stream/playlist.m3u8', message);
 
-    if(message.content.startsWith('!volume')) {
+    }
+    else if(content.startsWith(prefix + "cid")){
 
-        const vol = message.content.split(' ')[1]/100
+        dispatcher = dis.createDispatcher('https://mcrwowza7.mcr.iol.pt/cidade/smil:cidade.smil/playlist.m3u8', message);
 
+    }
+    else if(content.startsWith(prefix + "comercial")){
+
+        dispatcher = dis.createDispatcher('http://mcrwowza7.mcr.iol.pt/comercial/smil:comercial.smil/playlist.m3u8', message);
+
+    }
+    else if(content.startsWith(prefix + "volume")){
+
+        vol = message.content.split(' ')[1]/100
+        console.log(vol);
         volume.vol(message, dispatcher, vol)
+ 
 
     }
-
-    if(message.content.startsWith('!pause')) {
-
-        dispatcher.pause();
-
-        
-    }
-
-    if(message.content.startsWith('!help')) {
-
+    else if(content.startsWith(prefix + "help")){
         message.channel
-            .send('Comandos: \n -!help \n -!clear Limpa as mensagens do bot \n -!volume [valor] \n -!play \n -!pause\
-                    \n -!orbital Rádio Orbital \n -!antena3 Rádio Antena3 \n -!cid Rádio Cidade FM \
-                    \n -!cidhip Rádio Cidade FM Hip-Hop \n -!hiper Rádio HiperFM \n -!comercial Rádio Comrcial')
-
+        .send({embed: {
+            color: 3447003,
+            author:{
+                name: client.user.username,
+            icon_url: client.user.avatarURL()
+        },
+            title: "Comandos disponíveis",
+            description: "Todos os comandos disponíveis.",
+            fields:[{
+                name: `${prefix}play [link Youtube]`,
+                value: "Reproduz o link Youtube enviado"
+            },
+            {
+                name: `${prefix}help`,
+                value: "Mostra todos os comandos disponíveis."
+            },
+            {
+                name: `${prefix}clear`,
+                value: "Elimina todas as mensagens enviadas pelo BOT."
+            },
+            {
+                name: `${prefix}volume [valor]`,
+                value: "Controla o volume do BOT."
+            },
+            {
+                name: `${prefix}orbital`,
+                value: "Reproduz a stream da Rádio Orbital."
+            },
+            {
+                name: `${prefix}antena3`,
+                value: "Reproduz a stream da Rádio Antena 3."
+            },
+            {
+                name: `${prefix}cid`,
+                value: "Reproduz a stream da Rádio CidadeFM."
+            },
+            {
+                name: `${prefix}cidhip`,
+                value: "Reproduz a stream da Rádio CidadeFM Hip-Hop."
+            },
+            {
+                name: `${prefix}hiper`,
+                value: "Reproduz a stream da Rádio HiperFM."
+            },
+            {
+                name: `${prefix}comercial`,
+                value: "Reproduz a stream da Rádio Comercial."
+            }],
+            timestamp: new Date(),
+            footer: {
+                icon_url: message.guild.iconURL(),
+                text: message.guild.name
+            }
+        }
+    });
     }
-    
-    if(message.content.startsWith('!clear')){
-
-        clear(message)
-
+    else if(content.startsWith(prefix + "clear")){
+        clear(message);
     }
-
+    else{
+        message.channel.send(`Não sei que comando é esse. Usa ${prefix}help para saberes os comandos disponíveis.`)
+    }
 
 
 }
 
-async function executePlay(message, serverQueue){
+let execute = async (message, serverQueue, args) => {
 
-    const voiceChannel = message.member.voice.channel;
+    let vc = message.member.voice.channel;
 
-    const args = message.content.split(" ");
-    
-    let songTitle = "";
+    if(!vc){
 
-    for(let i = 1; i < args.length; i++){
+        return message.channel.send("Please join a voice chat first!");
 
-        songTitle += args[i];
-        songTitle += " ";
 
     }
+    else{
+        let result = await searcher.search(args.join(" "), { type: "video" });
+        message.channel.send(result.first.url);
+        const songInfo = await ytdl.getInfo(result.first.url);
 
-    try{
+        let song = {
+            title : songInfo.videoDetails.title,
+            url: songInfo.videoDetails.videoId
+        };
+        
+        if(!serverQueue){
 
-        const videos = await youtube.searchVideos(songTitle, 5);
+            const queueConstructor = {
 
-        const song = videos[0].id;
-    
-        if (videos.length < 5){
-
-            return message.reply('Não foram encontrados vídeos com esse nome.');
-
-        }
-        console.log(serverQueue);
-
-        if(!serverQueue) {
-
-            const queueConstruct = {
-                textChannel : message.channel,
-                voiceChannel : voiceChannel,
-                connection : null,
+                txtChannel: message.channel,
+                vChannel: vc,
+                connection: null,
                 songs: [],
-                volume: 5,
-                playing: true
+                volume: 10,
+                playing: true,
+
             };
-    
-            queue.set(message.guild.id, queueConstruct);
-    
+
+            queue.set(message.guild.id, queueConstructor);
+
+            queueConstructor.songs.push(song);
 
             try{
-                const connection = await voiceChannel.join();
-                queueConstruct.connection = connection;
-
-                queueConstruct.songs.push(song);
-                play(message.guild, queueConstruct.songs[0]);
-        
-            } catch(err){
-        
-                console.error(err);
-                return message.reply('Ocorreu um erro ao ir buscar o vídeo.')
-        
+                let connection = await vc.join();
+                queueConstructor.connection = connection;
+                play(message.guild, queueConstructor.songs[0]);
             }
-            
-    
+            catch(err){
+                console.error(err);
+                queue.delete(message.guild.id);
+                return message.channel.send(`Não foi possível conectar-me ao voice channel ${err}.`)
+            }
         }
         else{
-            console.log(song);
             serverQueue.songs.push(song);
-            return message.channel.send(songTitle + " foi adicionado à queue.");
-
+            
+            return message.channel.send(`A música foi adicionada à queue ${song.url}`);
         }
 
-    } catch(err){
-
-        console.error(err);
-
     }
-
-
+        
 }
 
-function play(guild, song){
+let play = (guild, song) => {
 
     const serverQueue = queue.get(guild.id);
 
     if(!song){
 
-        serverQueue.voiceChannel.leave();
+        serverQueue.vChannel.leave();
         queue.delete(guild.id);
         return;
 
     }
 
-    console.log(song);
+    serverQueue.duration = song.duration;
 
-    const url = `https://www.youtube.com/watch?v=${song}`;
-        
-    dispatcher = serverQueue.connection
-        .play(ytdl(url, {
-            highWaterMark: 1024 * 1024 * 10
-        })
-        .on("finish", () => {
+    const dispatcher = serverQueue.connection
+        .play(ytdl(song.url))
+        .on('finish', () => {
             serverQueue.songs.shift();
             play(guild, serverQueue.songs[0]);
         })
-        .on("error", error => console.error(error))
-    );
+
+
+};
+
+let stop = (message, serverQueue) => {
+
+    if(!message.member.voice.channel){
+
+        return message.channel.send("Tens de estar conectado/a a um voice channel.");
+
+    }
+
+    serverQueue.songs = [];
+    serverQueue.connection.dispatcher.end();
+}
+
+let skip = (message, serverQueue) => {
+
     
-    return dispatcher;
+    if(!message.member.voice.channel){
+
+        return message.channel.send("Tens de estar conectado/a a um voice channel.");
+
+    }
+
+    if(!serverQueue) {
+        
+        return message.channel.send("Não há nada para reproduzir!");
+        
+    }
+    serverQueue.connection.dispatcher.end();
+};
+
+let showQueue = (client, message, serverQueue) => {
+
+    if(!message.member.voice.channel){
+
+        return message.channel.send("Tens de estar conectado/a a um voice channel.");
+
+    }
+
+    if(!serverQueue) {
+        
+        return message.channel.send({embed:{
+            color: 3447003,
+            author:{
+                name: client.user.username,
+            icon_url: client.user.avatarURL()
+        },
+            title: "Queue",
+            description: "Músicas na Queue",
+            fields:[{
+                name:"Nada para reproduzir.",
+                value: "0"
+            },
+            ]
+        }});
+        
+    }
+    else{
+
+        let embed = {
+            color: 3447003,
+            author:{
+                name: client.user.username,
+            icon_url: client.user.avatarURL()
+        },
+            title: "Queue",
+            description: "Músicas na Queue",
+            fields:[]
+        
+        };
+
+        serverQueue.songs.map( (item, pos) => {
+
+            embed.fields.push({
+                name: `${pos + 1} - ${item.title}`});
+
+        })
+
+
+        return message.channel.send({embed});
+
+    }
+
+
 
 }

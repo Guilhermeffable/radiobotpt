@@ -1,4 +1,5 @@
-async function createDispatcher(url, message){
+
+let createDispatcher = async (url, message) => {
 
     const voiceChannel = message.member.voice.channel;
     

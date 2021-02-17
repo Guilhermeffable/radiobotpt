@@ -35,7 +35,7 @@ module.exports = async (client, message) => {
 
     if(content.startsWith(prefix + "play")){
 
-        execute(message, serverQueue, args);
+        execute(message, serverQueue, args, queue);
 
     }
     else if(content.startsWith(prefix + "skip")){
@@ -174,7 +174,7 @@ module.exports = async (client, message) => {
 
 }
 
-let execute = async (message, serverQueue, args) => {
+let execute = async (message, serverQueue, args, queue) => {
 
     let vc = message.member.voice.channel;
 
@@ -214,7 +214,7 @@ let execute = async (message, serverQueue, args) => {
             try{
                 let connection = await vc.join();
                 queueConstructor.connection = connection;
-                play.play(message.guild, queueConstructor.songs[0]);
+                play.play(message.guild, queueConstructor.songs[0], queue);
             }
             catch(err){
                 console.error(err);

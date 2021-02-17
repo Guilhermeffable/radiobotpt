@@ -230,7 +230,6 @@ let play = (guild, song) => {
     if(!song){
 
         setInterval(serverQueue.vChannel.leave(), 300000);
-}
         queue.delete(guild.id);
         return;
 

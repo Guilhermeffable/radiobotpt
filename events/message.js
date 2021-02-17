@@ -2,7 +2,7 @@ const volume = require('../commands/volume')
 const pause = require('../commands/pause')
 const clear = require('../commands/clear')
 const dis = require('../commands/dispatcher')
-
+const play = require('../commands/play')
 
 const ytdl = require('ytdl-core');
 const {YTSearcher} = require('ytsearcher');
@@ -16,8 +16,8 @@ const searcher = new YTSearcher({
 let vol = 5;
 
 
-
 const queue = new Map();
+
 module.exports = async (client, message) => {
 
     let dispatcher;
@@ -112,6 +112,10 @@ module.exports = async (client, message) => {
                 value: "Reproduz o link Youtube enviado"
             },
             {
+                name:`${prefix}skip`,
+                value: "Passa a música atual, reproduz a próxima música na queue"
+            },
+            {
                 name: `${prefix}help`,
                 value: "Mostra todos os comandos disponíveis."
             },
@@ -146,7 +150,12 @@ module.exports = async (client, message) => {
             {
                 name: `${prefix}comercial`,
                 value: "Reproduz a stream da Rádio Comercial."
-            }],
+            },
+            {
+                name: `${prefix}mega`,
+                value: "Reproduz a stream da Rádio MegaHits"
+            }
+            ],
             timestamp: new Date(),
             footer: {
                 icon_url: message.guild.iconURL(),
@@ -205,7 +214,7 @@ let execute = async (message, serverQueue, args) => {
             try{
                 let connection = await vc.join();
                 queueConstructor.connection = connection;
-                play(message.guild, queueConstructor.songs[0]);
+                play.play(message.guild, queueConstructor.songs[0]);
             }
             catch(err){
                 console.error(err);

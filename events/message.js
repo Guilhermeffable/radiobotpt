@@ -15,10 +15,12 @@ const searcher = new YTSearcher({
 
 let vol = 5;
 
-let dispatcher;
+
 
 const queue = new Map();
 module.exports = async (client, message) => {
+
+    let dispatcher;
 
     let content = message.content;
     

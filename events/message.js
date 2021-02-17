@@ -1,8 +1,8 @@
 const volume = require('../commands/volume')
 const pause = require('../commands/pause')
 const clear = require('../commands/clear')
-const dis = require('../commands/dispatcher')
-
+const dis = require('../music/dispatcher')
+const fs = require('fs');
 const ytdl = require('ytdl-core');
 const {YTSearcher} = require('ytsearcher');
 
@@ -14,10 +14,28 @@ const searcher = new YTSearcher({
 
 let vol = 5;
 
-
 const queue = new Map();
 
 module.exports = async (client, message) => {
+    //alias support
+    fs.readdir('./commands/', (err,files) => {
+        if(err) console.log(err);
+    
+        files.forEach( (file) => {
+            if(!file.endsWith(".js")) return;
+            console.log(file)
+            let cmd = require(`./commands/${file}`);
+            let cmdName = cmd.config.name;
+            client.commands.set(cmdName, cmd);
+            cmd.config.aliases.forEach(alias => {
+    
+                client.aliases.set(alias, cmdName)
+    
+            });
+        })
+    });
+
+
 
     let dispatcher;
 
@@ -191,183 +209,6 @@ module.exports = async (client, message) => {
 
 }
 
-let execute = async (message, serverQueue, args) => {
-
-    let vc = message.member.voice.channel;
-
-    if(!vc){
-
-        return message.channel.send("Please join a voice chat first!");
-
-
-    }
-    else{
-        let result = await searcher.search(args.join(" "), { type: "video" });
-        message.channel.send(result.first.url);
-        const songInfo = await ytdl.getInfo(result.first.url);
-
-        let song = {
-            title : songInfo.videoDetails.title,
-            url: songInfo.videoDetails.videoId
-        };
-        
-        if(!serverQueue){
-
-            const queueConstructor = {
-
-                txtChannel: message.channel,
-                vChannel: vc,
-                connection: null,
-                songs: [],
-                volume: 10,
-                playing: true,
-
-            };
-
-            queue.set(message.guild.id, queueConstructor);
-
-            queueConstructor.songs.push(song);
-
-            try{
-                let connection = await vc.join();
-                queueConstructor.connection = connection;
-                play(message.guild, queueConstructor.songs[0]);
-            }
-            catch(err){
-                console.error(err);
-                queue.delete(message.guild.id);
-                return message.channel.send(`Não foi possível conectar-me ao voice channel ${err}.`)
-            }
-        }
-        else{
-            serverQueue.songs.push(song);
-            
-            return;
-        }
-
-    }
-        
-}
-
-
-let play = (guild, song) => {
-
-    const serverQueue = queue.get(guild.id);
-
-    if(!song){
-
-        serverQueue.vChannel.leave();
-        queue.delete(guild.id);
-        return;
-
-    }
-
-    serverQueue.duration = song.duration;
-
-    const dispatcher = serverQueue.connection
-        .play(ytdl(song.url))
-        .on('finish', () => {
-            serverQueue.songs.shift();
-            play(guild, serverQueue.songs[0]);
-        })
-
-
-};
-
-let leave = (message, serverQueue) => {
-
-    if(!message.member.voice.channel){
-
-        return message.channel.send("Tens de estar conectado/a a um voice channel.");
-
-    }
-
-    serverQueue.connection.dispatcher.end();
-
-}
-
-let stop = (message, serverQueue) => {
-
-    if(!message.member.voice.channel){
-
-        return message.channel.send("Tens de estar conectado/a a um voice channel.");
-
-    }
-
-    serverQueue.songs = [];
-    setInterval(serverQueue.connection.dispatcher.end(), 300000);
-}
-
-let skip = (message, serverQueue) => {
-
-    
-    if(!message.member.voice.channel){
-
-        return message.channel.send("Tens de estar conectado/a a um voice channel.");
-
-    }
-
-    if(!serverQueue) {
-        
-        return message.channel.send("Não há nada para reproduzir!");
-        
-    }
-
-    serverQueue.connection.dispatcher.end();
-};
-
-let showQueue = (client, message, serverQueue) => {
-
-    if(!message.member.voice.channel){
-
-        return message.channel.send("Tens de estar conectado/a a um voice channel.");
-
-    }
-
-    if(!serverQueue) {
-        
-        return message.channel.send({embed:{
-            color: 3447003,
-            author:{
-                name: client.user.username,
-            icon_url: client.user.avatarURL()
-        },
-            title: "Queue",
-            description: "Músicas na Queue",
-            fields:[{
-                name:"Nada para reproduzir.",
-                value: "0"
-            },
-            ]
-        }});
-        
-    }
-    else{
-
-        let embed = {
-            color: 3447003,
-            author:{
-                name: client.user.username,
-            icon_url: client.user.avatarURL()
-        },
-            title: "Queue",
-            description: "Músicas na Queue",
-            fields:[]
-        
-        };
-
-        serverQueue.songs.map( (item, pos) => {
-
-            embed.fields.push({
-                name: `${pos + 1} - ${item.title}`});
-
-        })
-
-
-        return message.channel.send({embed});
-
-    }
 
 
 
-}

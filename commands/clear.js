@@ -1,4 +1,4 @@
-function clear(message){
+module.exports.run = (message) => {
 
 
     message.channel.messages.fetch().then(messages => {
@@ -10,8 +10,11 @@ function clear(message){
 
     })
 
+}
+ 
 
-}   
 
-
-module.exports = clear;
+module.exports.config = {
+    name:"clear",
+    aliases: ["clean", "delete"]
+};

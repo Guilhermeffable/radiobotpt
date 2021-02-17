@@ -191,7 +191,7 @@ module.exports = async (client, message) => {
 
 }
 
-let execute = async (message, serverQueue, args, queue) => {
+let execute = async (message, serverQueue, args) => {
 
     let vc = message.member.voice.channel;
 
@@ -313,7 +313,7 @@ let skip = (message, serverQueue) => {
         
     }
 
-    setInterval(serverQueue.connection.dispatcher.end(), 300000);
+    serverQueue.connection.dispatcher.end();
 };
 
 let showQueue = (client, message, serverQueue) => {

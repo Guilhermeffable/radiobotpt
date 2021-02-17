@@ -8,7 +8,7 @@ module.exports.run = async (client, message, args, queue, searcher) => {
 
     console.log(queue);
 
-    if(!vc) return message.send("Tens de estar conectado a um canal de voz!");
+    if(!vc) return message.channel.send("Tens de estar conectado a um canal de voz!");
 
     let url = args.join(" ");
 
@@ -36,11 +36,15 @@ module.exports.run = async (client, message, args, queue, searcher) => {
          
         let dur = `${parseInt(serverQueue.songs[0].vLength / 60)}:${seconds < 10 ? '0' + seconds : seconds}`;
         let msg = new Discord.MessageEmbed()
-                .setTitle("A tocar: ")
-                .addField(serverQueue.songs[0].title, "_______")
-                .addField("Duração: ", dur)
-                .setThumbnail(serverQueue.songs[0].thumbnail)
-                .setColor("PINK")
+            .setTitle("A tocar: ")
+            .setDescription(`[${serverQueue.songs[0].title}](${serverQueue.songs[0].url})`, "_______")
+            .addField("Duração", dur, true)
+            .addField('\u200B', '\u200B', true)
+            .addField("Pedida por:", `${message.author.toString()}`)
+            .setImage(serverQueue.songs[0].thumbnail)
+            .setColor("PINK")
+            .setTimestamp(new Date())
+            .setFooter(message.guild.name, message.guild.iconURL())
         
         serverQueue.txtChannel.send(msg);
         

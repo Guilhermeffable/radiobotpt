@@ -8,7 +8,7 @@ const ytdl = require('ytdl-core');
 const {YTSearcher} = require('ytsearcher');
 
 const searcher = new YTSearcher({
-    key: "AIzaSyBxzArRIQKk_HlwZ4fqWViN-BK0ZjJlcmc",
+    key: process.env.youtube_api,
     revealed: true
 });
 

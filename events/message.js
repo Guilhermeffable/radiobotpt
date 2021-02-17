@@ -232,7 +232,7 @@ let execute = async (message, serverQueue, args) => {
         
 }
 
-let play = (guild, song) => {
+/* let play = (guild, song) => {
 
     const serverQueue = queue.get(guild.id);
 
@@ -254,7 +254,7 @@ let play = (guild, song) => {
         })
 
 
-};
+}; */
 
 let stop = (message, serverQueue) => {
 

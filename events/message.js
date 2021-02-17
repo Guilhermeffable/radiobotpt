@@ -90,7 +90,11 @@ module.exports = async (client, message) => {
             dispatcher = dis.createDispatcher('https://20133.live.streamtheworld.com/MEGA_HITSAAC.aac?dist=triton-widget&tdsdk=js-2.9&pname=tdwidgets&pversion=2.9&banners=none', message);
              break;
 
+        case "leave":
 
+            leave(message, serverQueue);
+            break;
+            
         case "volume":
 
             vol = message.content.split(' ')[1]/100

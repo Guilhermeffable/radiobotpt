@@ -89,6 +89,12 @@ module.exports = async (client, message) => {
  
 
     }
+    else if(content.startsWith(prefix + "mega")){
+        
+        dispatcher = dis.createDispatcher('https://20133.live.streamtheworld.com/MEGA_HITSAAC.aac?dist=triton-widget&tdsdk=js-2.9&pname=tdwidgets&pversion=2.9&banners=none', message);
+
+
+    }
     else if(content.startsWith(prefix + "help")){
         message.channel
         .send({embed: {
@@ -221,7 +227,8 @@ let play = (guild, song) => {
 
     if(!song){
 
-        serverQueue.vChannel.leave();
+        setInterval(serverQueue.vChannel.leave(), 300000);
+}
         queue.delete(guild.id);
         return;
 

@@ -2,7 +2,6 @@ const volume = require('../commands/volume')
 const pause = require('../commands/pause')
 const clear = require('../commands/clear')
 const dis = require('../commands/dispatcher')
-const play = require('../commands/play')
 
 const ytdl = require('ytdl-core');
 const {YTSearcher} = require('ytsearcher');
@@ -37,7 +36,7 @@ module.exports = async (client, message) => {
 
         case "play":
 
-            execute(message, serverQueue, args, queue);
+            execute(message, serverQueue, args);
             break;
         
         case "skip":
@@ -94,7 +93,7 @@ module.exports = async (client, message) => {
 
             leave(message, serverQueue);
             break;
-            
+
         case "volume":
 
             vol = message.content.split(' ')[1]/100
@@ -232,7 +231,7 @@ let execute = async (message, serverQueue, args, queue) => {
             try{
                 let connection = await vc.join();
                 queueConstructor.connection = connection;
-                play.play(message.guild, queueConstructor.songs[0], queue);
+                play(message.guild, queueConstructor.songs[0]);
             }
             catch(err){
                 console.error(err);
@@ -249,6 +248,31 @@ let execute = async (message, serverQueue, args, queue) => {
     }
         
 }
+
+
+let play = (guild, song) => {
+
+    const serverQueue = queue.get(guild.id);
+
+    if(!song){
+
+        setInterval(serverQueue.vChannel.leave(), 300000);
+        queue.delete(guild.id);
+        return;
+
+    }
+
+    serverQueue.duration = song.duration;
+
+    const dispatcher = serverQueue.connection
+        .play(ytdl(song.url))
+        .on('finish', () => {
+            serverQueue.songs.shift();
+            play(guild, serverQueue.songs[0]);
+        })
+
+
+};
 
 let leave = (message, serverQueue) => {
 

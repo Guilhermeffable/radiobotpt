@@ -111,7 +111,7 @@ module.exports.run = async (client, message, args, queue, searcher) => {
         }catch(err){
             return message.channel.send(`Insere um link válido.\n${err}`)
         }
-        m
+        
     }
     else{
 

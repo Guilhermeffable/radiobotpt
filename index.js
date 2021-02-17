@@ -5,7 +5,7 @@ const Discord = require('discord.js')
 const {YTSearcher} = require('ytsearcher');
 
 const searcher = new YTSearcher({
-    key: process.env.youtube_api,
+    key: "AIzaSyBxzArRIQKk_HlwZ4fqWViN-BK0ZjJlcmc",
     revealed: true
 });
 
@@ -143,4 +143,4 @@ let showQueue = (client, message, serverQueue) => {
 
 
 
-client.login(process.env.token);
+client.login('Njg0MDEyNDUyNDIxNDM1Mzk4.Xlz6PA.bDehKwaIXneOpTM3OF7qJKSVBO4');

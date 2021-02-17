@@ -33,144 +33,158 @@ module.exports = async (client, message) => {
 
     if(!content.startsWith(prefix) || message.author.bot) return;
 
-    if(content.startsWith(prefix + "play")){
+    switch(command){
 
-        execute(message, serverQueue, args, queue);
+        case "play":
 
-    }
-    else if(content.startsWith(prefix + "skip")){
-        console.log(message);
-        skip(message, serverQueue);
-
-    }
-    else if(content.startsWith(prefix + "stop")){
-
-        stop(message, serverQueue);
-
-    }
-    else if(content.startsWith(prefix + "queue")){
-
-        showQueue(client, message, serverQueue);
-
-    }
-    else if(content.startsWith(prefix + "antena3")){
-
-        dispatcher = dis.createDispatcher('https://streaming-live.rtp.pt/liveradio/antena380a/playlist.m3u8?DVR', message);
-
-    }
-    else if(content.startsWith(prefix + "orbital")){
-
-        dispatcher = dis.createDispatcher('http://centova.radios.pt:8401/stream.mp3/1', message);
-
-    }
-    else if(content.startsWith(prefix + "hiper")){
-
-        dispatcher = dis.createDispatcher('https://centova.radio.com.pt/proxy/500?mp=/stream', message);
-
-    }
-    else if(content.startsWith(prefix + "cidhip")){
+            execute(message, serverQueue, args, queue);
+            break;
         
-        dispatcher = dis.createDispatcher('https://mcrwowza7.mcr.iol.pt/cidhiphop/cidhiphop.stream/playlist.m3u8', message);
+        case "skip":
 
-    }
-    else if(content.startsWith(prefix + "cid")){
-
-        dispatcher = dis.createDispatcher('https://mcrwowza7.mcr.iol.pt/cidade/smil:cidade.smil/playlist.m3u8', message);
-
-    }
-    else if(content.startsWith(prefix + "comercial")){
-
-        dispatcher = dis.createDispatcher('http://mcrwowza7.mcr.iol.pt/comercial/smil:comercial.smil/playlist.m3u8', message);
-
-    }
-    else if(content.startsWith(prefix + "volume")){
-
-        vol = message.content.split(' ')[1]/100
-        console.log(vol);
-        volume.vol(message, dispatcher, vol)
- 
-
-    }
-    else if(content.startsWith(prefix + "mega")){
+            skip(message, serverQueue);
+            break;
         
-        dispatcher = dis.createDispatcher('https://20133.live.streamtheworld.com/MEGA_HITSAAC.aac?dist=triton-widget&tdsdk=js-2.9&pname=tdwidgets&pversion=2.9&banners=none', message);
+        case "stop":
+
+            stop(message, serverQueue);
+            break;        
+
+        case "queue":
+
+            showQueue(client, message, serverQueue);
+            break;
+
+        case "antena3":
+
+            dispatcher = dis.createDispatcher('https://streaming-live.rtp.pt/liveradio/antena380a/playlist.m3u8?DVR', message);
+            break;
+        
+        case "hiper":
+
+            dispatcher = dis.createDispatcher('https://centova.radio.com.pt/proxy/500?mp=/stream', message);
+            break;
+
+        case "orbital":
+
+            dispatcher = dis.createDispatcher('http://centova.radios.pt:8401/stream.mp3/1', message);
+            break;
+
+        case "cidhip":
+
+            dispatcher = dis.createDispatcher('https://mcrwowza7.mcr.iol.pt/cidhiphop/cidhiphop.stream/playlist.m3u8', message);
+            break;
+
+        case "cid":
+
+            dispatcher = dis.createDispatcher('https://mcrwowza7.mcr.iol.pt/cidade/smil:cidade.smil/playlist.m3u8', message);
+            break;
+
+        case "comercial":
+
+            dispatcher = dis.createDispatcher('http://mcrwowza7.mcr.iol.pt/comercial/smil:comercial.smil/playlist.m3u8', message);
+            break;
+        
+        case "mega":
+
+            dispatcher = dis.createDispatcher('https://20133.live.streamtheworld.com/MEGA_HITSAAC.aac?dist=triton-widget&tdsdk=js-2.9&pname=tdwidgets&pversion=2.9&banners=none', message);
+             break;
 
 
-    }
-    else if(content.startsWith(prefix + "help")){
-        message.channel
-        .send({embed: {
-            color: 3447003,
-            author:{
-                name: client.user.username,
-            icon_url: client.user.avatarURL()
-        },
-            title: "Comandos disponíveis",
-            description: "Todos os comandos disponíveis.",
-            fields:[{
-                name: `${prefix}play [link Youtube]`,
-                value: "Reproduz o link Youtube enviado"
+        case "volume":
+
+            vol = message.content.split(' ')[1]/100
+            console.log(vol);
+            volume.vol(message, dispatcher, vol)
+            break;
+
+        case "help":
+            message.channel
+            .send({embed: {
+                color: 3447003,
+                author:{
+                    name: client.user.username,
+                icon_url: client.user.avatarURL()
             },
-            {
-                name:`${prefix}skip`,
-                value: "Passa a música atual, reproduz a próxima música na queue"
-            },
-            {
-                name: `${prefix}help`,
-                value: "Mostra todos os comandos disponíveis."
-            },
-            {
-                name: `${prefix}clear`,
-                value: "Elimina todas as mensagens enviadas pelo BOT."
-            },
-            {
-                name: `${prefix}volume [valor]`,
-                value: "Controla o volume do BOT."
-            },
-            {
-                name: `${prefix}orbital`,
-                value: "Reproduz a stream da Rádio Orbital."
-            },
-            {
-                name: `${prefix}antena3`,
-                value: "Reproduz a stream da Rádio Antena 3."
-            },
-            {
-                name: `${prefix}cid`,
-                value: "Reproduz a stream da Rádio CidadeFM."
-            },
-            {
-                name: `${prefix}cidhip`,
-                value: "Reproduz a stream da Rádio CidadeFM Hip-Hop."
-            },
-            {
-                name: `${prefix}hiper`,
-                value: "Reproduz a stream da Rádio HiperFM."
-            },
-            {
-                name: `${prefix}comercial`,
-                value: "Reproduz a stream da Rádio Comercial."
-            },
-            {
-                name: `${prefix}mega`,
-                value: "Reproduz a stream da Rádio MegaHits"
+                title: "Comandos disponíveis",
+                description: "Todos os comandos disponíveis.",
+                fields:[{
+                    name: `${prefix}play [query]`,
+                    value: "Pesquisa e reproduz o primeiro resultado encontrado no Youtube."
+                },
+                {
+                    name:`${prefix}skip`,
+                    value: "Passa a música atual, reproduz a próxima música na queue."
+                },
+                {
+                    name:`${prefix}stop`,
+                    value: "Pára toda a reprodução de música do BOT."
+                },
+                {
+                    name:`${prefix}leave`,
+                    value: "Disconecta o BOT do canal de voz."
+                },
+                {
+                    name: `${prefix}help`,
+                    value: "Mostra todos os comandos disponíveis."
+                },
+                {
+                    name: `${prefix}clear`,
+                    value: "Elimina todas as mensagens enviadas pelo BOT."
+                },
+                {
+                    name: `${prefix}volume [valor]`,
+                    value: "Controla o volume do BOT (apenas nas streams de rádio)."
+                },
+                {
+                    name: `${prefix}orbital`,
+                    value: "Reproduz a stream da Rádio Orbital."
+                },
+                {
+                    name: `${prefix}antena3`,
+                    value: "Reproduz a stream da Rádio Antena 3."
+                },
+                {
+                    name: `${prefix}cid`,
+                    value: "Reproduz a stream da Rádio CidadeFM."
+                },
+                {
+                    name: `${prefix}cidhip`,
+                    value: "Reproduz a stream da Rádio CidadeFM Hip-Hop."
+                },
+                {
+                    name: `${prefix}hiper`,
+                    value: "Reproduz a stream da Rádio HiperFM."
+                },
+                {
+                    name: `${prefix}comercial`,
+                    value: "Reproduz a stream da Rádio Comercial."
+                },
+                {
+                    name: `${prefix}mega`,
+                    value: "Reproduz a stream da Rádio MegaHits"
+                }
+                ],
+                timestamp: new Date(),
+                footer: {
+                    icon_url: message.guild.iconURL(),
+                    text: message.guild.name
+                }
             }
-            ],
-            timestamp: new Date(),
-            footer: {
-                icon_url: message.guild.iconURL(),
-                text: message.guild.name
-            }
-        }
-    });
-    }
-    else if(content.startsWith(prefix + "clear")){
-        clear(message);
-    }
-    else{
-        message.channel.send(`Não sei que comando é esse. Usa ${prefix}help para saberes os comandos disponíveis.`)
+        });
+        break;
+
+        case "clear":
+            clear(message);
+            break;
+        
+        default:
+            message.channel.send(`Não sei que comando é esse. Usa ${prefix}help para saberes os comandos disponíveis.`);
+
     }
 
+
+    
 
 }
 
@@ -232,29 +246,17 @@ let execute = async (message, serverQueue, args, queue) => {
         
 }
 
-/* let play = (guild, song) => {
+let leave = (message, serverQueue) => {
 
-    const serverQueue = queue.get(guild.id);
+    if(!message.member.voice.channel){
 
-    if(!song){
-
-        setInterval(serverQueue.vChannel.leave(), 300000);
-        queue.delete(guild.id);
-        return;
+        return message.channel.send("Tens de estar conectado/a a um voice channel.");
 
     }
 
-    serverQueue.duration = song.duration;
+    serverQueue.connection.dispatcher.end();
 
-    const dispatcher = serverQueue.connection
-        .play(ytdl(song.url))
-        .on('finish', () => {
-            serverQueue.songs.shift();
-            play(guild, serverQueue.songs[0]);
-        })
-
-
-}; */
+}
 
 let stop = (message, serverQueue) => {
 

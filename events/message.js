@@ -208,7 +208,7 @@ let execute = async (message, serverQueue, args) => {
         else{
             serverQueue.songs.push(song);
             
-            return message.channel.send(`A música foi adicionada à queue ${song.url}`);
+            return;
         }
 
     }
@@ -248,7 +248,7 @@ let stop = (message, serverQueue) => {
     }
 
     serverQueue.songs = [];
-    serverQueue.connection.dispatcher.end();
+    setInterval(serverQueue.connection.dispatcher.end(), 300000);
 }
 
 let skip = (message, serverQueue) => {
@@ -265,7 +265,8 @@ let skip = (message, serverQueue) => {
         return message.channel.send("Não há nada para reproduzir!");
         
     }
-    serverQueue.connection.dispatcher.end();
+
+    setInterval(serverQueue.connection.dispatcher.end(), 300000);
 };
 
 let showQueue = (client, message, serverQueue) => {

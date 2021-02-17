@@ -1,3 +1,5 @@
+const ytdl = require('ytdl-core');
+
 let play = (guild, song, queue) => {
 
     const serverQueue = queue.get(guild.id);

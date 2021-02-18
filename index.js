@@ -18,12 +18,10 @@ fs.readdir('./commands/', (err,files) => {
 
     files.forEach( (file) => {
         if(!file.endsWith(".js")) return;
-        console.log(file)
         let cmd = require(`./commands/${file}`);
         let cmdName = cmd.config.name;
         client.commands.set(cmdName, cmd);
         cmd.config.aliases.forEach(alias => {
-            console.log(alias)
             client.aliases.set(alias, cmdName)
 
         });
@@ -54,9 +52,10 @@ client.on("message", async (message) => {
     const cmd = client.commands.get(command) || client.commands.get(client.aliases.get(command));
 
     if(!cmd) return;
-    console.log(cmd)
+
     try{
-        cmd.run(client, message, args, queue, searcher,prefix);
+        
+        cmd.run(client, message, args, queue, searcher, prefix);
     }catch(err){
         return console.error(err);
     }
@@ -66,80 +65,6 @@ client.on("message", async (message) => {
 
 });
 
-
-
-
-let skip = (message, serverQueue) => {
-
-    
-    if(!message.member.voice.channel){
-
-        return message.channel.send("Tens de estar conectado/a a um voice channel.");
-
-    }
-
-    if(!serverQueue) {
-        
-        return message.channel.send("Não há nada para reproduzir!");
-        
-    }
-
-    serverQueue.connection.dispatcher.end();
-};
-
-let showQueue = (client, message, serverQueue) => {
-
-    if(!message.member.voice.channel){
-
-        return message.channel.send("Tens de estar conectado/a a um voice channel.");
-
-    }
-
-    if(!serverQueue) {
-        
-        return message.channel.send({embed:{
-            color: 3447003,
-            author:{
-                name: client.user.username,
-            icon_url: client.user.avatarURL()
-        },
-            title: "Queue",
-            description: "Músicas na Queue",
-            fields:[{
-                name:"Nada para reproduzir.",
-                value: "0"
-            },
-            ]
-        }});
-        
-    }
-    else{
-
-        let embed = {
-            color: 3447003,
-            author:{
-                name: client.user.username,
-            icon_url: client.user.avatarURL()
-        },
-            title: "Queue",
-            description: "Músicas na Queue",
-            fields:[]
-        
-        };
-
-        serverQueue.songs.map( (item, pos) => {
-
-            embed.fields.push({
-                name: `${pos + 1} - ${item.title}`});
-
-        })
-
-
-        return message.channel.send({embed});
-
-    }
-
-}
 
 
 

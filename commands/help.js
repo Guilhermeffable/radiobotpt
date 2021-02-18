@@ -1,6 +1,6 @@
 const Discord = require('discord.js');
 
-module.exports.run = (client, message, prefix) => {
+module.exports.run = (client, message, args, queue, searcher, prefix) => {
 
     let msg = new Discord.MessageEmbed()
         .setTitle("Comandos disponíveis")
@@ -19,6 +19,7 @@ module.exports.run = (client, message, prefix) => {
         .addField(`${prefix}hiper`, "Reproduz a stream da Rádio HiperFM.")
         .addField(`${prefix}comercial`, "Reproduz a stream da Rádio Comercial.")
         .addField(`${prefix}mega`, "Reproduz a stream da Rádio MegaHits")
+        .setColor("DARK_VIVID_PINK")
         .setTimestamp(new Date())
         .setFooter(message.guild.name, message.guild.iconURL())
         .setThumbnail(client.user.avatarURL())

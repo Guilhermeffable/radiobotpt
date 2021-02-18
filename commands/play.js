@@ -6,8 +6,6 @@ module.exports.run = async (client, message, args, queue, searcher) => {
 
     const vc = message.member.voice.channel;
 
-    console.log(queue);
-
     if(!vc) return message.channel.send("Tens de estar conectado a um canal de voz!");
 
     let url = args.join(" ");
@@ -40,9 +38,9 @@ module.exports.run = async (client, message, args, queue, searcher) => {
             .setDescription(`[${serverQueue.songs[0].title}](${serverQueue.songs[0].url})`, "_______")
             .addField("Duração", dur, true)
             .addField('\u200B', '\u200B', true)
-            .addField("Pedida por:", `${message.author.toString()}`)
+            .addField("Pedida por:", `${serverQueue.songs[0].askedBy}`)
             .setImage(serverQueue.songs[0].thumbnail)
-            .setColor("PINK")
+            .setColor("DARK_VIVID_PINK")
             .setTimestamp(new Date())
             .setFooter(message.guild.name, message.guild.iconURL())
         
@@ -54,8 +52,6 @@ module.exports.run = async (client, message, args, queue, searcher) => {
 
     let videoHandler = async (songInfo, message, vc, playlist = false) => {
 
-        
-
         const serverQueue = queue.get(message.guild.id);
 
         const song = {
@@ -63,7 +59,9 @@ module.exports.run = async (client, message, args, queue, searcher) => {
             title: songInfo.videoDetails.title,
             url: songInfo.videoDetails.video_url,
             vLength: songInfo.videoDetails.lengthSeconds,
-            thumbnail: songInfo.videoDetails.thumbnails[3].url
+            thumbnail: songInfo.videoDetails.thumbnails[3].url,
+            askedBy: message.author.toString(),
+            askedByUsername: message.author.username
 
         }
 
@@ -94,15 +92,12 @@ module.exports.run = async (client, message, args, queue, searcher) => {
                 return message.channel.send(`Não foi possível conectar-me ao voice channel ${err}.`)
             }
         }else{
-
-            let msg = new Discord.MessageEmbed()
-            .setTitle("Adicionada à queue. ")
-            .setDescription(`${serverQueue.songs[0].title}, adicionada à queue.`, `${message.author.toString()}`)
-            .setColor("PINK")
-            serverQueue.songs.push(song);
-            message.channel.send(msg);
-            return;
-
+                let msg = new Discord.MessageEmbed()
+                    .setTitle("Adicionada à queue. ")
+                    .setDescription(`[${song.title}](${song.url}) pedida por: ${song.askedBy}`)
+                    .setColor("DARK_VIVID_PINK")
+                serverQueue.songs.push(song);
+                message.channel.send(msg);
                 return;
         }
     }
@@ -120,7 +115,7 @@ module.exports.run = async (client, message, args, queue, searcher) => {
         }catch(err){
             return message.channel.send(`Insere um link válido.\n${err}`)
         }
-        
+        m
     }
     else{
 

@@ -95,8 +95,13 @@ module.exports.run = async (client, message, args, queue, searcher) => {
             }
         }else{
 
-                serverQueue.songs.push(song);
-                
+            let msg = new Discord.MessageEmbed()
+            .setTitle("Adicionada à queue. ")
+            .setDescription(`${serverQueue.songs[0].title}, adicionada à queue.`, `${message.author.toString()}`)
+            .setColor("PINK")
+            serverQueue.songs.push(song);
+            message.channel.send(msg);
+            return;
 
                 return;
         }

@@ -22,7 +22,7 @@ module.exports.run = (client, message, args, queue, searcher) => {
 
         serverQueue.songs.map( (item, pos) => {
 
-            embed.addField(`${pos + 1} - ${item.title}`,  `@${item.askedByUsername}`)
+            embed.addField(`${pos + 1} - [${serverQueue.songs[0].title}](${serverQueue.songs[0].url})`,  `@${item.askedByUsername}`)
     
     
         })

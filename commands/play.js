@@ -83,11 +83,7 @@ module.exports.run = async (client, message, args, queue, searcher) => {
 
             try{
                 let connection = await vc.join()
-                    .then(connection => {
-                        
-                        connection.voice.setSelfDeaf(true);
-
-                    });
+                message.guild.me.voice.setSelfDeaf(true);
                 queueConstructor.connection = connection;
                 play(message.guild, queueConstructor.songs[0]);
             }

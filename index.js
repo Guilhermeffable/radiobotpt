@@ -147,6 +147,11 @@ let showQueue = (client, message, serverQueue) => {
 
 }
 
+client.user.setActivity("!help", {
+
+    type: "WATCHING"
+
+})
 
 
 client.login(process.env.token);

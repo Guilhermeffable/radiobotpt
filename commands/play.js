@@ -10,7 +10,7 @@ module.exports.run = async (client, message, args, queue, searcher) => {
 
 	let url = args.join(' ');
 
-	let play = (guild, song) => {
+	const play = (guild, song) => {
 		const serverQueue = queue.get(guild.id);
 
 		if (!song) {
@@ -51,7 +51,7 @@ module.exports.run = async (client, message, args, queue, searcher) => {
 		serverQueue.txtChannel.send(msg);
 	};
 
-	let videoHandler = async (songInfo, message, vc, playlist = false) => {
+	const videoHandler = async (songInfo, message, vc, playlist = false) => {
 		const serverQueue = queue.get(message.guild.id);
 
 		const song = {

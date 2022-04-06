@@ -46,21 +46,21 @@ module.exports.run = async (client, message, args, queue, searcher) => {
 			seconds < 10 ? '0' + seconds : seconds
 		}`;
 
-		let msg = new Discord.MessageEmbed()
-			.setTitle('A tocar: ')
-			.setDescription(
-				`[${serverQueue.songs[0].title}](${serverQueue.songs[0].url})`,
-				'_______'
-			)
-			.addField('Duração', dur, true)
-			.addField('\u200B', '\u200B', true)
-			.addField('Pedida por:', `${serverQueue.songs[0].askedBy}`)
-			.setImage(serverQueue.songs[0].thumbnail)
-			.setColor('DARK_VIVID_PINK')
-			.setTimestamp(new Date())
-			.setFooter(message.guild.name);
+		// let msg = new Discord.MessageEmbed()
+		// 	.setTitle('A tocar: ')
+		// 	.setDescription(
+		// 		`[${serverQueue.songs[0].title}](${serverQueue.songs[0].url})`,
+		// 		'_______'
+		// 	)
+		// 	.addField('Duração', dur, true)
+		// 	.addField('\u200B', '\u200B', true)
+		// 	.addField('Pedida por:', `${serverQueue.songs[0].askedBy}`)
+		// 	.setImage(serverQueue.songs[0].thumbnail)
+		// 	.setColor('DARK_VIVID_PINK')
+		// 	.setTimestamp(new Date())
+		// 	.setFooter(message.guild.name);
 
-		serverQueue.txtChannel.send(msg);
+		// serverQueue.txtChannel.send(msg);
 	};
 
 	const videoHandler = async (songInfo, message, vc, playlist = false) => {

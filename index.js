@@ -74,5 +74,6 @@ client.on('messageCreate', async (message) => {
         return console.error(err);
     }
 });
+console.log(process.env.token);
 
-client.login(process.env.token);
+client.login('Njg0MDEyNDUyNDIxNDM1Mzk4.Xlz6PA.4-udGosS0XmrEhqjk88hKwAlICo');

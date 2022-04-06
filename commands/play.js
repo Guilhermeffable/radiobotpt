@@ -49,7 +49,7 @@ const play = (guild, song, queue) => {
     const serverQueue = queue.get(guild.id);
 
     if (!song) {
-        getVoiceConnection(message.guild.id).state.subscription.unsubscribe();
+        getVoiceConnection(guild.id).state.subscription.unsubscribe();
 
         queue.delete(guild.id);
 
@@ -64,9 +64,7 @@ const play = (guild, song, queue) => {
     player.addListener('stateChange', (oldOne, newOne) => {
         console.log(newOne.status, oldOne.status);
         if (newOne.status == 'idle') {
-            getVoiceConnection(
-                message.guild.id
-            ).state.subscription.unsubscribe();
+            getVoiceConnection(guild.id).state.subscription.unsubscribe();
             serverQueue.songs.shift();
             play(guild, serverQueue.songs[0], queue);
         }

@@ -42,8 +42,8 @@ module.exports.run = async (client, message, args, queue, searcher) => {
                 getVoiceConnection(
                     message.guild.id
                 ).state.subscription.unsubscribe();
-                // serverQueue.songs.shift();
-                // play(guild, serverQueue.songs[0]);
+                serverQueue.songs.shift();
+                play(guild, serverQueue.songs[0]);
             }
         });
 

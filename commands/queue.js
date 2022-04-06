@@ -28,7 +28,7 @@ module.exports.run = (client, message, args, queue, searcher) => {
         });
     }
 
-    message.channel.send({ embeds: msg });
+    message.channel.send({ embeds: embed });
 };
 
 module.exports.config = {

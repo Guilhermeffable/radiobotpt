@@ -10,7 +10,11 @@ const searcher = require('yt-search');
 // });
 
 const client = new Client({
-	intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES],
+	intents: [
+		Intents.FLAGS.GUILDS,
+		Intents.FLAGS.GUILD_MESSAGES,
+		Intents.GUILD_VOICE_STATES,
+	],
 });
 client.commands = new Collection();
 client.aliases = new Collection();

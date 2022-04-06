@@ -1,7 +1,11 @@
 const ytdl = require('ytdl-core');
 const ytpl = require('ytpl');
 const Discord = require('discord.js');
-const { joinVoiceChannel } = require('@discordjs/voice');
+const {
+	joinVoiceChannel,
+	createAudioPlayer,
+	createAudioResource,
+} = require('@discordjs/voice');
 
 module.exports.run = async (client, message, args, queue, searcher) => {
 	const vc = message.member.voice.channel;
@@ -20,12 +24,19 @@ module.exports.run = async (client, message, args, queue, searcher) => {
 			return;
 		}
 
-		const dispatcher = serverQueue.connection
-			.play(ytdl(song.url, { highWaterMark: 1 << 25 }))
-			.on('finish', () => {
-				serverQueue.songs.shift();
-				play(guild, serverQueue.songs[0]);
-			});
+		const audioResource = createAudioResource(
+			ytdl(song.url, { highWaterMark: 1 << 25 })
+		);
+		const player = createAudioPlayer();
+
+		const dispatcher = serverQueue.connection.subscribe(player);
+
+		player.play(audioResource);
+
+		// .on('finish', () => {
+		// 	serverQueue.songs.shift();
+		// 	play(guild, serverQueue.songs[0]);
+		// });
 
 		let seconds =
 			serverQueue.songs[0].vLength -

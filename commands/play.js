@@ -41,11 +41,11 @@ module.exports.run = async (client, message, args, queue, searcher) => {
         if (result.videos == null || result.videos.length == 0)
             return message.channel.send('Não foram encontrados resultados.');
         let songInfo = await ytdl.getInfo(result.videos[0].url);
-        return videoHandler(songInfo, message, vc);
+        return videoHandler(songInfo, message, vc, queue);
     }
 };
 
-const play = (guild, song) => {
+const play = (guild, song, queue) => {
     const serverQueue = queue.get(guild.id);
 
     if (!song) {
@@ -68,7 +68,7 @@ const play = (guild, song) => {
                 message.guild.id
             ).state.subscription.unsubscribe();
             serverQueue.songs.shift();
-            play(guild, serverQueue.songs[0]);
+            play(guild, serverQueue.songs[0], queue);
         }
     });
 
@@ -104,7 +104,7 @@ const play = (guild, song) => {
     serverQueue.txtChannel.send({ embeds: [msg] });
 };
 
-const videoHandler = async (songInfo, message, vc, playlist = false) => {
+const videoHandler = async (songInfo, message, vc, queue, playlist = false) => {
     const serverQueue = queue.get(message.guild.id);
 
     const song = {
@@ -141,7 +141,7 @@ const videoHandler = async (songInfo, message, vc, playlist = false) => {
                 });
             }
             queueConstructor.connection = connection;
-            play(message.guild, queueConstructor.songs[0]);
+            play(message.guild, queueConstructor.songs[0], queue);
         } catch (err) {
             console.error(err);
             queue.delete(message.guild.id);

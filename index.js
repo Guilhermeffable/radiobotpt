@@ -39,7 +39,7 @@ client.on('ready', () => {
 	});
 });
 
-client.on('message', async (message) => {
+client.on('messageCreate', async (message) => {
 	const { prefix } = require('./json/config.json');
 
 	let prefixes = JSON.parse(fs.readFileSync('./json/prefixes.json', 'utf-8'));

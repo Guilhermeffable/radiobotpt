@@ -57,8 +57,8 @@ module.exports.run = async (client, message, args, queue, searcher) => {
 			.addField('Pedida por:', `${serverQueue.songs[0].askedBy}`)
 			.setImage(serverQueue.songs[0].thumbnail)
 			.setColor('DARK_VIVID_PINK')
-			.setTimestamp(new Date())
-			.setFooter(message.guild.name, message.guild.iconURL());
+			.setTimestamp(new Date());
+		// .setFooter(message.guild.name, message.guild.iconURL());
 
 		serverQueue.txtChannel.send(msg);
 	};

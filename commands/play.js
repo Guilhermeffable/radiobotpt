@@ -5,6 +5,7 @@ const {
 	joinVoiceChannel,
 	createAudioPlayer,
 	createAudioResource,
+	getVoiceConnection,
 } = require('@discordjs/voice');
 
 module.exports.run = async (client, message, args, queue, searcher) => {
@@ -29,8 +30,15 @@ module.exports.run = async (client, message, args, queue, searcher) => {
 		);
 		const player = createAudioPlayer();
 
-		const dispatcher = serverQueue.connection.subscribe(player);
+		player.addListener('stateChange', (oldOne, newOne) => {
+			if (newOne.status == 'idle') {
+				serverQueue.songs.shift();
+				play(guild, serverQueue.songs[0]);
+			}
+		});
 
+		const dispatcher = serverQueue.connection.subscribe(player);
+		console.log(serverQueue.connection);
 		player.play(audioResource);
 
 		// .on('finish', () => {
@@ -90,11 +98,16 @@ module.exports.run = async (client, message, args, queue, searcher) => {
 			queueConstructor.songs.push(song);
 
 			try {
-				let connection = joinVoiceChannel({
-					channelId: message.member.voice.channel.id,
-					guildId: message.guild.id,
-					adapterCreator: message.guild.voiceAdapterCreator,
-				});
+				let connection = getVoiceConnection(vc.guild.id);
+
+				if (!connection) {
+					connection = joinVoiceChannel({
+						channelId: message.member.voice.channel.id,
+						guildId: message.guild.id,
+						adapterCreator: message.guild.voiceAdapterCreator,
+					});
+				}
+
 				// message.guild.me.setDeaf(true);
 				queueConstructor.connection = connection;
 				play(message.guild, queueConstructor.songs[0]);

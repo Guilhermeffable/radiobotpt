@@ -14,13 +14,16 @@ let createDispatcher = async (url, message) => {
 	if (!permissions.has('CONNECT') || !permissions.has('SPEAK')) {
 		return message.channel.send('Não tenho permissões para entrar nessa sala.');
 	}
+	let connection = getVoiceConnection(message.member.voice.channel.guild.id);
 
+	if (!connection) {
+		connection = joinVoiceChannel({
+			channelId: message.member.voice.channel.id,
+			guildId: message.guild.id,
+			adapterCreator: message.guild.voiceAdapterCreator,
+		});
+	}
 	//conecta ao canal de voz e reproduz o link
-	const connection = joinVoiceChannel({
-		channelId: message.member.voice.channel.id,
-		guildId: message.guild.id,
-		adapterCreator: message.guild.voiceAdapterCreator,
-	});
 
 	dispatcher = connection.play(url);
 

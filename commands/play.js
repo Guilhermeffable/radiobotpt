@@ -83,9 +83,8 @@ module.exports.run = async (client, message, args, queue, searcher) => {
 					channelId: message.member.voice.channel.id,
 					guildId: message.guild.id,
 					adapterCreator: message.guild.voiceAdapterCreator,
-				}).then((connection) => {
-					connection.voice.setSelfDeaf(true);
 				});
+				connection.voice.message.guild.me.setDeaf(true);
 				queueConstructor.connection = connection;
 				play(message.guild, queueConstructor.songs[0]);
 			} catch (err) {

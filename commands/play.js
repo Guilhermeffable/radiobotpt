@@ -38,10 +38,13 @@ module.exports.run = async (client, message, args, queue, searcher) => {
 
         player.addListener('stateChange', (oldOne, newOne) => {
             console.log(newOne.status, oldOne.status);
-            // if (newOne.status == 'autopaused') {
-            //     serverQueue.songs.shift();
-            //     play(guild, serverQueue.songs[0]);
-            // }
+            if (newOne.status == 'idle') {
+                getVoiceConnection(
+                    message.guild.id
+                ).state.subscription.unsubscribe();
+                // serverQueue.songs.shift();
+                // play(guild, serverQueue.songs[0]);
+            }
         });
 
         const dispatcher = serverQueue.connection.subscribe(player);

@@ -17,6 +17,7 @@
 	"homepage": "https://github.com/Guilhermeffable/botorbital#readme",
 	"description": "",
 	"dependencies": {
+		"@discordjs/voice": "^0.8.0",
 		"discord.js": "^13.6.0",
 		"dotenv": "^16.0.0",
 		"npm-check-updates": "^12.5.7",

@@ -1,6 +1,7 @@
 const ytdl = require('ytdl-core');
 const ytpl = require('ytpl');
 const Discord = require('discord.js');
+const { joinVoiceChannel } = require('@discordjs/voice');
 
 module.exports.run = async (client, message, args, queue, searcher) => {
 	const vc = message.member.voice.channel;
@@ -78,7 +79,11 @@ module.exports.run = async (client, message, args, queue, searcher) => {
 			queueConstructor.songs.push(song);
 
 			try {
-				let connection = await vc.join();
+				let connection = joinVoiceChannel({
+					channelId: message.member.voice.channel.id,
+					guildId: message.guild.id,
+					adapterCreator: message.guild.voiceAdapterCreator,
+				});
 				message.guild.me.voice.setSelfDeaf(true);
 				queueConstructor.connection = connection;
 				play(message.guild, queueConstructor.songs[0]);

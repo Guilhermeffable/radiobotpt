@@ -1,6 +1,6 @@
 require('dotenv').config();
 const fs = require('fs');
-const Discord = require('discord.js');
+const { Client, Intents, Collection } = require('discord.js');
 
 const searcher = require('yt-search');
 
@@ -9,9 +9,11 @@ const searcher = require('yt-search');
 // 	revealed: true,
 // });
 
-const client = new Discord.Client();
-client.commands = new Discord.Collection();
-client.aliases = new Discord.Collection();
+const client = new Client({
+	intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES],
+});
+client.commands = new Collection();
+client.aliases = new Collection();
 
 fs.readdir('./commands/', (err, files) => {
 	if (err) console.log(err);

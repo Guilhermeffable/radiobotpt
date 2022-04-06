@@ -2,12 +2,12 @@ require('dotenv').config();
 const fs = require('fs');
 const Discord = require('discord.js');
 
-const { YTSearcher } = require('ytsearcher');
+const searcher = require('yt-search');
 
-const searcher = new YTSearcher({
-	key: process.env.youtube_api,
-	revealed: true,
-});
+// const searcher = new YTSearcher({
+// 	key: process.env.youtube_api,
+// 	revealed: true,
+// });
 
 const client = new Discord.Client();
 client.commands = new Discord.Collection();

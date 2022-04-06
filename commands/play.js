@@ -119,11 +119,10 @@ module.exports.run = async (client, message, args, queue, searcher) => {
 			return message.channel.send(`Insere um link válido.\n${err}`);
 		}
 	} else {
-		let result = await searcher.search(args.join(' '), { type: 'video' });
-		if (result.first == null)
+		let result = await searcher(args.join(' '));
+		if (result.videos == null || result.videos.length == 0)
 			return message.channel.send('Não foram encontrados resultados.');
-		//message.channel.send(result.first.url);
-		let songInfo = await ytdl.getInfo(result.first.url);
+		let songInfo = await ytdl.getInfo(result.videos[0].url);
 		return videoHandler(songInfo, message, vc);
 	}
 };

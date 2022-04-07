@@ -126,8 +126,8 @@ const videoHandler = (songInfo, message, vc, queue, playlist = false) => {
 		queue.set(message.guild.id, queueConstructor);
 
 		queueConstructor.songs.push(song);
-
 		try {
+			console.log('DEU MERDA');
 			let connection = getVoiceConnection(message.guild.id);
 
 			if (!connection) {

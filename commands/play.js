@@ -37,11 +37,19 @@ module.exports.run = async (client, message, args, queue, searcher) => {
             return message.channel.send(`Insere um link válido.\n${err}`);
         }
     } else {
-        let result = await searcher(args.join(' '));
-        if (result.videos == null || result.videos.length == 0)
-            return message.channel.send('Não foram encontrados resultados.');
-        let songInfo = await ytdl.getInfo(result.videos[0].url);
-        return videoHandler(songInfo, message, vc, queue);
+        await searcher(args.join(' ')).then((response) => {
+			if (response.videos == null || response.videos.length == 0){
+
+				return message.channel.send('Não foram encontrados resultados.');
+			}
+        	await ytdl.getInfo(response.videos[0].url).then((response) => {
+				return videoHandler(response, message, vc, queue);
+			});
+		});
+        // if (result.videos == null || result.videos.length == 0)
+        //     return message.channel.send('Não foram encontrados resultados.');
+        // let songInfo = await ytdl.getInfo(result.videos[0].url);
+       
     }
 };
 

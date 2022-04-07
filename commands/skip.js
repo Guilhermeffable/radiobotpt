@@ -1,28 +1,32 @@
 const { getVoiceConnection } = require('@discordjs/voice');
+const msg = require('./play.js');
 
 module.exports.run = (client, message, args, queue, searcher) => {
-    const serverQueue = queue.get(message.guild.id);
-    console.log(serverQueue.connection);
-    if (message.member.voice.channel != message.guild.me.voice.channel) {
-        return message.channel.send(
-            'Tens de estar ao mesmo voice chat que o BOT.'
-        );
-    }
+	const serverQueue = queue.get(message.guild.id);
 
-    if (!serverQueue)
-        return message.channel.send('Não há nada para reproduzir!');
+	serverQueue.songs.shift();
 
-    let roleN = message.guild.roles.cache.find((role) => role.name === 'DJ');
+	if (message.member.voice.channel != message.guild.me.voice.channel) {
+		return message.channel.send('Tens de estar ao mesmo voice chat que o BOT.');
+	}
 
-    if (!message.member.roles.cache.get(roleN.id))
-        return message.channel.send(
-            'Não tens o role necessário para passar a música.'
-        );
+	if (!serverQueue) return message.channel.send('Não há nada para reproduzir!');
 
-    const connection = getVoiceConnection(message.guild.id);
+	let roleN = message.guild.roles.cache.find((role) => role.name === 'DJ');
+
+	if (!message.member.roles.cache.get(roleN.id))
+		return message.channel.send(
+			'Não tens o role necessário para passar a música.'
+		);
+
+	const connection = getVoiceConnection(message.guild.id);
+
+	let songToPlay = serverQueue.songs[0];
+
+	msg.play(message.guild, songToPlay, queue);
 };
 
 module.exports.config = {
-    name: 'skip',
-    aliases: ['s', 'fs']
+	name: 'skip',
+	aliases: ['s', 'fs'],
 };

@@ -163,6 +163,9 @@ const videoHandler = async (songInfo, message, vc, queue, playlist = false) => {
 	}
 };
 
+module.exports.play = play;
+// module.exports.videoHandler;
+
 module.exports.config = {
 	name: 'play',
 	aliases: ['p', 'pl'],

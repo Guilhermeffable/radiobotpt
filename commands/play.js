@@ -66,7 +66,7 @@ const play = (guild, song, queue) => {
 
 	player.addListener('stateChange', (oldOne, newOne) => {
 		console.log(newOne.status, oldOne.status);
-		if (newOne.status == 'idle') {
+		if (newOne.status == 'idle' && oldOne.status != 'buffering') {
 			getVoiceConnection(guild.id).state.subscription.unsubscribe();
 			serverQueue.songs.shift();
 			play(guild, serverQueue.songs[0], queue);
@@ -98,8 +98,8 @@ const play = (guild, song, queue) => {
 		.setColor('DARK_VIVID_PINK')
 		.setTimestamp(new Date())
 		.setFooter({
-			text: message.guild.name,
-			iconURL: message.guild.iconURL(),
+			text: guild.name,
+			iconURL: guild.iconURL(),
 		});
 
 	serverQueue.txtChannel.send({ embeds: [msg] });

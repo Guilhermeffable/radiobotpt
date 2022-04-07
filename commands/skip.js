@@ -19,11 +19,9 @@ module.exports.run = (client, message, args, queue, searcher) => {
 			'Não tens o role necessário para passar a música.'
 		);
 
-	const connection = getVoiceConnection(message.guild.id);
-
 	let songToPlay = serverQueue.songs[0];
-
-	msg.play(message.guild, songToPlay, queue);
+	setTimeout(() => msg.play(message.guild, songToPlay, queue), 1000);
+	// msg.play(message.guild, songToPlay, queue);
 };
 
 module.exports.config = {

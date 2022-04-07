@@ -39,10 +39,12 @@ module.exports.run = async (client, message, args, queue, searcher) => {
 			}
 			return response;
 		});
-		// if (result.videos == null || result.videos.length == 0)
-		//     return message.channel.send('Não foram encontrados resultados.');
-		// let songInfo = await ytdl.getInfo(result.videos[0].url);
-		let videos = await ytdl.getInfo(results.videos[0].url);
+
+		let videos = await ytdl.getInfo(results.videos[0].url).then((response) => {
+			if (response != null) {
+				return response;
+			}
+		});
 
 		return videoHandler(videos, message, vc, queue);
 	}
@@ -73,7 +75,7 @@ const play = (guild, song, queue) => {
 		}
 	});
 
-	const dispatcher = serverQueue.connection.subscribe(player);
+	getVoiceConnection(guild.id).subscribe(player);
 
 	player.play(audioResource);
 

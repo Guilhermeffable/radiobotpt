@@ -10,11 +10,10 @@ module.exports.run = (client, message, args, queue, searcher) => {
 		.setFooter({
 			text: message.guild.name,
 			iconURL: message.guild.iconURL(),
-		})
-		.setAuthor(client.user.username);
+		});
 
 	if (!serverQueue) {
-		embed.addField('Não há nada para ser reproduzido.');
+		embed.addField('Queue vazio', 'Não há nada para ser reproduzido.');
 	} else {
 		serverQueue.songs.map((item, pos) => {
 			embed.addField(
@@ -26,7 +25,7 @@ module.exports.run = (client, message, args, queue, searcher) => {
 		});
 	}
 
-	message.channel.send({ embeds: embed });
+	message.channel.send({ embeds: [embed] });
 };
 
 module.exports.config = {

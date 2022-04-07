@@ -5,7 +5,7 @@ module.exports.run = (client, message, args, queue, searcher) => {
 
 	const connection = getVoiceConnection(guildID);
 
-	connection.state.subscription.unsubscribe();
+	connection.state.subscription?.unsubscribe();
 	connection.disconnect();
 	connection.destroy();
 

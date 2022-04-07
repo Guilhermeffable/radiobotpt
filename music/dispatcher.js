@@ -5,7 +5,9 @@ const {
 	createAudioResource,
 } = require('@discordjs/voice');
 
-let createDispatcher = async (url, message) => {
+const { createReadStream } = require('node:fs');
+
+let createDispatcher = (url, message) => {
 	const voiceChannel = message.member.voice.channel;
 
 	//vê se o user está numa sala de voz
@@ -21,7 +23,7 @@ let createDispatcher = async (url, message) => {
 	if (!permissions.has('CONNECT') || !permissions.has('SPEAK')) {
 		return message.channel.send('Não tenho permissões para entrar nessa sala.');
 	}
-	let connection = getVoiceConnection(message.member.voice.channel.guild.id);
+	let connection = getVoiceConnection(message.guild.id);
 
 	if (!connection) {
 		connection = joinVoiceChannel({
@@ -33,11 +35,13 @@ let createDispatcher = async (url, message) => {
 	//conecta ao canal de voz e reproduz o link
 
 	const audioResource = createAudioResource(url);
-	const player = createAudioPlayer();
-
-	connection.subscribe(player);
-
-	player.play(audioResource);
+	try {
+		let audioPlayer = createAudioPlayer();
+		connection.subscribe(audioPlayer);
+		audioPlayer.play(audioResource);
+	} catch (ex) {
+		console.error(ex);
+	}
 };
 
 module.exports.createDispatcher = createDispatcher;

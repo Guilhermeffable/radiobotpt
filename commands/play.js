@@ -101,7 +101,7 @@ const play = (guild, song, queue) => {
 	serverQueue.txtChannel.send({ embeds: [msg] });
 };
 
-const videoHandler = async (songInfo, message, vc, queue, playlist = false) => {
+const videoHandler = (songInfo, message, vc, queue, playlist = false) => {
 	const serverQueue = queue.get(message.guild.id);
 
 	const song = {

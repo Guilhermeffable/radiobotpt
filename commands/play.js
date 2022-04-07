@@ -42,9 +42,9 @@ module.exports.run = async (client, message, args, queue, searcher) => {
 
 				return message.channel.send('Não foram encontrados resultados.');
 			}
-        	await ytdl.getInfo(response.videos[0].url).then((response) => {
-				return videoHandler(response, message, vc, queue);
-			});
+        	let videos = await ytdl.getInfo(response.videos[0].url);
+
+			return videoHandler(videos, message, vc, queue);
 		});
         // if (result.videos == null || result.videos.length == 0)
         //     return message.channel.send('Não foram encontrados resultados.');

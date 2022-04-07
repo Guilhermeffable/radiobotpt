@@ -40,13 +40,7 @@ module.exports.run = async (client, message, args, queue, searcher) => {
 			return response;
 		});
 
-		let videos = await ytdl.getInfo(results.videos[0].url).then((response) => {
-			if (response != null) {
-				return response;
-			}
-		});
-
-		return videoHandler(videos, message, vc, queue);
+		return videoHandler(results.videos[0], message, vc, queue);
 	}
 };
 
@@ -111,10 +105,10 @@ const videoHandler = async (songInfo, message, vc, queue, playlist = false) => {
 	const serverQueue = queue.get(message.guild.id);
 
 	const song = {
-		title: songInfo.videoDetails.title,
-		url: songInfo.videoDetails.video_url,
-		vLength: songInfo.videoDetails.lengthSeconds,
-		thumbnail: songInfo.videoDetails.thumbnails[3].url,
+		title: songInfo.title,
+		url: songInfo.url,
+		vLength: songInfo.seconds,
+		thumbnail: songInfo.thumbnail,
 		askedBy: message.author.toString(),
 		askedByUsername: message.author.username,
 	};

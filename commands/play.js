@@ -40,7 +40,7 @@ module.exports.run = async (client, message, args, queue, searcher) => {
 			return response;
 		});
 
-		return videoHandler(results.videos[0], message, vc, queue);
+		videoHandler(results.videos[0], message, vc, queue);
 	}
 };
 
@@ -127,7 +127,6 @@ const videoHandler = (songInfo, message, vc, queue, playlist = false) => {
 
 		queueConstructor.songs.push(song);
 		try {
-			console.log('DEU MERDA');
 			let connection = getVoiceConnection(message.guild.id);
 
 			if (!connection) {
@@ -155,7 +154,6 @@ const videoHandler = (songInfo, message, vc, queue, playlist = false) => {
 			.setColor('DARK_VIVID_PINK');
 		serverQueue.songs.push(song);
 		message.channel.send({ embeds: [msg] });
-		return;
 	}
 };
 

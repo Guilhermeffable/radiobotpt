@@ -1,14 +1,21 @@
-const dis = require('../music/dispatcher')
+const dis = require('../music/dispatcher');
+const { MessageEmbed } = require('discord.js');
 
+module.exports.run = (client, message, args, queue, searcher) => {
+	dis.createDispatcher(
+		'https://centova.radio.com.pt/proxy/500?mp=/stream',
+		message
+	);
 
-module.exports.run =  (client, message, args, queue, searcher) => {
+	let msg = new MessageEmbed()
+		.setTitle('Rádio ')
+		.setDescription(`HiperFM`)
+		.setColor('ORANGE');
 
-    dis.createDispatcher('https://centova.radio.com.pt/proxy/500?mp=/stream', message)
-
-}
+	message.channel.send({ embeds: [msg] });
+};
 
 module.exports.config = {
-
-    name:"hiper",
-    aliases: []
-}
+	name: 'hiper',
+	aliases: [],
+};

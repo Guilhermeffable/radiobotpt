@@ -1,3 +1,10 @@
+const {
+	getVoiceConnection,
+	joinVoiceChannel,
+	createAudioPlayer,
+	createAudioResource,
+} = require('@discordjs/voice');
+
 let createDispatcher = async (url, message) => {
 	const voiceChannel = message.member.voice.channel;
 
@@ -25,9 +32,12 @@ let createDispatcher = async (url, message) => {
 	}
 	//conecta ao canal de voz e reproduz o link
 
-	dispatcher = connection.play(url);
+	const audioResource = createAudioResource(url);
+	const player = createAudioPlayer();
 
-	return dispatcher;
+	connection.subscribe(player);
+
+	player.play(audioResource);
 };
 
 module.exports.createDispatcher = createDispatcher;

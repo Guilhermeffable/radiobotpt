@@ -1,16 +1,18 @@
-const dis = require('../music/dispatcher')
+const dis = require('../music/dispatcher');
+const { MessageEmbed } = require('discord.js');
 
+module.exports.run = (client, message, args, queue, searcher) => {
+	dis.createDispatcher('http://centova.radios.pt:8401/stream.mp3/1', message);
 
-module.exports.run =  (client, message, args, queue, searcher) => {
+	let msg = new MessageEmbed()
+		.setTitle('Rádio ')
+		.setDescription(`Orbital`)
+		.setColor('ORANGE');
 
-    dis.createDispatcher('http://centova.radios.pt:8401/stream.mp3/1', message)
-
-}
-
-
+	message.channel.send({ embeds: [msg] });
+};
 
 module.exports.config = {
-
-    name:"orbital",
-    aliases: []
-}
+	name: 'orbital',
+	aliases: [],
+};

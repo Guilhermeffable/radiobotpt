@@ -1,9 +1,4 @@
-const {
-	joinVoiceChannel,
-	createAudioPlayer,
-	createAudioResource,
-	getVoiceConnection,
-} = require('@discordjs/voice');
+const { getVoiceConnection } = require('@discordjs/voice');
 
 module.exports.run = (client, message, args, queue, searcher) => {
 	const guildID = message.guildId;
